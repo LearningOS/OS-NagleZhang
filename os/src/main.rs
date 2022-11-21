@@ -2,13 +2,16 @@
 #![no_std]
 #![feature(panic_info_message)]
 
-use log::*;
+#[macro_use]
+extern crate log;
 
 #[macro_use]
 mod console;
 mod lang_items;
 mod sbi;
+mod sync;
 mod logging;
+mod batch;
 
 use crate::sbi::shutdown;
 

@@ -11,3 +11,8 @@ and , I need write down the specific detail why this struct need to be write in 
 it can push me to think about why.
 
 and try to comment each line of code.
+
+
+## 11-21 11:00 kinda lazy today.
+
+if you want us logging in batch, under main.rs , you need spcific crate log with extern.(instead of use log::*;
