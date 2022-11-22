@@ -44,6 +44,8 @@ fn sys_write(fd: usize, buffer: &[u8]) -> isize {
 }
 
 core::arch::global_asm!(include_str!("entry.asm"));
+core::arch::global_asm!(include_str!("link_app.S"));
+core::arch::global_asm!(include_str!("trap/trap.S"));
 
 fn clear_bss() {
     extern "C" {
@@ -89,6 +91,13 @@ pub fn rust_main_by_nagle() {
     );
     error!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
     println!("Hello, world!");
-    print!("Hey, world!");
-    shutdown();
+    print!("Hey, world!\n");
+    batch::init();
+
+    // need trap into user mode.
+    // risc-v have three mode: User-mode Supervisor-mode Machine-mode
+    // we need trap into user mode, and execute application code.
+
+    panic!();
+
 }

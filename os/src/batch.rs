@@ -99,4 +99,10 @@ lazy_static! {
     };
 }
 
+pub fn init() {
+    print_app_info();
+}
 
+pub fn print_app_info() {
+    APP_MANAGER.exclusive_access().print_app_info();
+}
