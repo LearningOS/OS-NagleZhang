@@ -13,6 +13,16 @@ it can push me to think about why.
 and try to comment each line of code.
 
 
-## 11-21 11:00 kinda lazy today.
+## 11-21 23:00 kinda lazy today.
 
 if you want us logging in batch, under main.rs , you need spcific crate log with extern.(instead of use log::*;
+
+
+## 11-23 22:25 how to do trap
+
+when do trap, there are several steps need to be done:
+1. trap mode from Supervisor to User, implement trap.
+   in rust , how to capture the trap? we need match mcause or scause , and then handle the exception.
+2. save kernel context
+3. swithc to user space , and user stack
+4. point pc to the application start address
