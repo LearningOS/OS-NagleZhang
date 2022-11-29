@@ -45,7 +45,6 @@ fn sys_write(fd: usize, buffer: &[u8]) -> isize {
 
 core::arch::global_asm!(include_str!("entry.asm"));
 core::arch::global_asm!(include_str!("link_app.S"));
-core::arch::global_asm!(include_str!("trap/trap.S"));
 
 fn clear_bss() {
     extern "C" {
