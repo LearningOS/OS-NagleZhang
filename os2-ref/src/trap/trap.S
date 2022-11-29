@@ -26,6 +26,7 @@ __alltraps:
         .set n, n+1
     .endr
     # we can use t0/t1/t2 freely, because they were saved on kernel stack
+    # Why?
     csrr t0, sstatus
     csrr t1, sepc
     sd t0, 32*8(sp)

@@ -12,6 +12,7 @@ mod sbi;
 mod sync;
 mod logging;
 mod batch;
+mod trap;
 
 use crate::sbi::shutdown;
 
@@ -91,6 +92,7 @@ pub fn rust_main_by_nagle() {
     error!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
     println!("Hello, world!");
     print!("Hey, world!\n");
+    trap::init();
     batch::init();
 
     // need trap into user mode.

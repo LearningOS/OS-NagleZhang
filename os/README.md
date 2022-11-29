@@ -1,4 +1,5 @@
-Environment: Ubuntu 22.04 LTS linux 5.15.0
+Environment: Ubuntu 22.04 LTS linux 5.15.0 there is no Chinese input method.
+
 Protocol:
 1. Why? is I don't understand, will back to this line later.
 
@@ -26,3 +27,28 @@ when do trap, there are several steps need to be done:
 2. save kernel context
 3. swithc to user space , and user stack
 4. point pc to the application start address
+
+
+## 11-29 22:07 commoent trap.S
+
+today's target is just make this appliction run once it's able to be print.
+
+we now have trap.S make sure we can switch supervisor mode & user mode.
+
+once saving done, we need let cpu point to application code, and do syscalls.
+
+when kernel want to call a new appliction, cpu pc register will point to the application. and run command one by one.  
+
+once cpu get a trap singal, it will trigger a interrupt singal. kernel need to handle such singal, dispatch the event, write down the handler function.  
+
+but , how to handle a trap event?  
+
+first, we need know , where the trap code is, so, we need setup trap vec for risc v, which is , let the stvec(supervisor trap vector base address register) point to traphandler, in our code, is __alltraps.  
+but before handle traps, we need to save the application stack(need to build one?), and other register values. to kernel stack.  
+once it's done , we can switch to kernel stack, and with high privilege cpu call. to invoke syscall function(which is , syswrite, sysread, etc...)
+
+upon , we have described how to make a trap handler. which make kernel able to handler traps when application need to use syscalls.  
+
+next step, let's setting up applications.  
+
+rcore using batch.rs to call __restore, and load init applications. first one is just directly point to ADDRESS: 0x80400000  
