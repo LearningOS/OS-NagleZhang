@@ -13,36 +13,37 @@ mod sync;
 mod logging;
 mod batch;
 mod trap;
+mod syscall;
 
 use crate::sbi::shutdown;
 
-const SYS_EXIT: usize = 93;
-const SYS_WRITE: usize = 64;
-
-fn syscall(code: usize, args: [usize; 3]) -> isize {
-
-    let mut ret;
-
-    unsafe {
-        core::arch::asm!{
-            "ecall",
-            inlateout("x10") args[0] => ret,
-            in("x11") args[1],
-            in("x12") args[2],
-            in("x17") code,
-        };
-    }
-
-    ret
-}
-
-fn sys_exit(xstate: usize) -> isize {
-    syscall(SYS_EXIT, [xstate as usize, 0, 0 ])
-}
-
-fn sys_write(fd: usize, buffer: &[u8]) -> isize {
-    syscall(SYS_WRITE, [fd, buffer.as_ptr() as usize , buffer.len()])
-}
+//const SYS_EXIT: usize = 93;
+//const SYS_WRITE: usize = 64;
+//
+//fn syscall(code: usize, args: [usize; 3]) -> isize {
+//
+//    let mut ret;
+//
+//    unsafe {
+//        core::arch::asm!{
+//            "ecall",
+//            inlateout("x10") args[0] => ret,
+//            in("x11") args[1],
+//            in("x12") args[2],
+//            in("x17") code,
+//        };
+//    }
+//
+//    ret
+//}
+//
+//fn sys_exit(xstate: usize) -> isize {
+//    syscall(SYS_EXIT, [xstate as usize, 0, 0 ])
+//}
+//
+//fn sys_write(fd: usize, buffer: &[u8]) -> isize {
+//    syscall(SYS_WRITE, [fd, buffer.as_ptr() as usize , buffer.len()])
+//}
 
 core::arch::global_asm!(include_str!("entry.asm"));
 core::arch::global_asm!(include_str!("link_app.S"));
@@ -94,6 +95,7 @@ pub fn rust_main_by_nagle() {
     print!("Hey, world!\n");
     trap::init();
     batch::init();
+    batch::run_next_app();
 
     // need trap into user mode.
     // risc-v have three mode: User-mode Supervisor-mode Machine-mode

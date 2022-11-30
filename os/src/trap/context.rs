@@ -1,7 +1,7 @@
 use riscv::register::sstatus::{self, Sstatus, SPP};
 
 use crate::batch::run_next_app;
-use crate::syscall::syscall;
+use crate::syscall;
 use riscv::register::{
     mtvec::TrapMode,
     scause::{self, Exception, Trap},
@@ -15,7 +15,7 @@ use riscv::register::{
 #[repr(C)]
 pub struct TrapContext {
     pub x: [usize; 32],
-    pub sstauts: Sstatus,
+    pub sstatus: Sstatus,
     pub sepc: usize,
 }
 
@@ -23,12 +23,6 @@ pub struct TrapContext {
 // why we need implement trapcontext?
 // the real question should be: when we use trap context?
 // trapcontext is used when trap is happend, it record sepc
-/*
-impl TrapContext {
-    pub fn set_sp(&mut self, sp: usize)
-}
-*/
-
 
 impl TrapContext {
     pub fn set_sp(&mut self, sp: usize) {
@@ -46,6 +40,3 @@ impl TrapContext {
         cx
     }
 }
-
-
-pub use context::TrapContext;

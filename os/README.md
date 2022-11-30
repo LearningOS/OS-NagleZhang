@@ -31,11 +31,11 @@ when do trap, there are several steps need to be done:
 
 ## 11-29 22:07 commoent trap.S
 
-today's target is just make this appliction run once it's able to be print.
+today's target is just make this appliction run once it's able to be print.  
 
-we now have trap.S make sure we can switch supervisor mode & user mode.
+we now have trap.S make sure we can switch supervisor mode & user mode.  
 
-once saving done, we need let cpu point to application code, and do syscalls.
+once saving done, we need let cpu point to application code, and do syscalls.  
 
 when kernel want to call a new appliction, cpu pc register will point to the application. and run command one by one.  
 
@@ -52,3 +52,15 @@ upon , we have described how to make a trap handler. which make kernel able to h
 next step, let's setting up applications.  
 
 rcore using batch.rs to call __restore, and load init applications. first one is just directly point to ADDRESS: 0x80400000  
+
+
+## 11-30 17:12 Run applications
+
+today's target is to get the application run.  
+
+run\_next\_app() makes kernel enter into User mode.  
+
+the trick is using trap.S __restore assembly code.  
+
+the question is , how trap.S enter into user mode?  
+

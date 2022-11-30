@@ -1,10 +1,11 @@
 use crate::sync::UPSafeCell;
+use crate::trap::TrapContext;
 use lazy_static::*;
 
 
 const USER_STACK_SIZE: usize = 4096;
 const KERNEL_STACK_SIZE: usize = 4096 * 2;
-const MAX_APP_NUM: usize = 16;
+const MAX_APP_NUM: usize = 3;
 const APP_BASE_ADDRESS: usize = 0x80400000;
 const APP_SIZE_LIMIT: usize = 0x20000;
 
@@ -18,6 +19,11 @@ struct KernelStack {
 struct UserStack {
     data: [u8; USER_STACK_SIZE],
 }
+
+
+static KERNEL_STACK: KernelStack = KernelStack {
+    data: [0; KERNEL_STACK_SIZE],
+};
 
 static USER_STACK: UserStack = UserStack {
     data: [0; USER_STACK_SIZE],
@@ -142,10 +148,11 @@ pub fn print_app_info() {
     APP_MANAGER.exclusive_access().print_app_info();
 }
 
-
+// enter into user mode
 pub fn run_next_app() -> ! {
     let mut app_manager = APP_MANAGER.exclusive_access();
     let current_app = app_manager.get_current_app();
+    info!("start run next app.");
     unsafe {
         app_manager.load_app(current_app);
     }
@@ -156,6 +163,7 @@ pub fn run_next_app() -> ! {
     extern "C" {
         fn __restore(cx_addr: usize);
     }
+    info!("restore");
     unsafe {
         __restore(KERNEL_STACK.push_context(TrapContext::app_init_context(
             APP_BASE_ADDRESS,

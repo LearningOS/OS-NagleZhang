@@ -1,9 +1,14 @@
-
+.altmacro
 .macro SAVE_GP n
     sd x\n, \n*8(sp)
 .endm
-
-.align 2
+.macro LOAD_GP n
+    ld x\n, \n*8(sp)
+.endm
+    .section .text
+    .globl __alltraps
+    .globl __restore
+    .align 2
 __alltraps:
     csrrw sp, sscratch, sp
     # now sp->kernel stack, sscratch->user stack
@@ -20,7 +25,7 @@ __alltraps:
         SAVE_GP %n
         .set n, n+1
     .endr
-    # to make sure we can use t0/t1/t2 freely, because they were saved on kernel stack
+    # we can use t0/t1/t2 freely, because they were saved on kernel stack
     csrr t0, sstatus
     csrr t1, sepc
     sd t0, 32*8(sp)
@@ -57,3 +62,4 @@ __restore:
     # now sp->kernel stack, sscratch->user stack
     csrrw sp, sscratch, sp
     sret
+
