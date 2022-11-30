@@ -1,3 +1,4 @@
+![visualization](./img/kernel_visualize.png)
 Environment: Ubuntu 22.04 LTS linux 5.15.0 there is no Chinese input method.
 
 Protocol:

@@ -83,19 +83,14 @@ pub fn rust_main_by_nagle() {
     );
     error!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
 
-    trace!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
-    debug!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
-    info!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
-    warn!(
-        "boot_stack [{:#x}, {:#x})",
-        boot_stack as usize, boot_stack_top as usize
-    );
-    error!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
-    println!("Hello, world!");
-    print!("Hey, world!\n");
+    //println!("Hello, world!");
+    //print!("Hey, world!\n");
     trap::init();
     batch::init();
+
     batch::run_next_app();
+
+    info!("run next app done.");
 
     // need trap into user mode.
     // risc-v have three mode: User-mode Supervisor-mode Machine-mode
