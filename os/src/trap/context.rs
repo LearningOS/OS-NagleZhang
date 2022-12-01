@@ -1,6 +1,5 @@
 use riscv::register::sstatus::{self, Sstatus, SPP};
 
-use crate::batch::run_next_app;
 use crate::syscall;
 use riscv::register::{
     mtvec::TrapMode,
