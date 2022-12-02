@@ -200,6 +200,7 @@ impl AppManager {
         app_dst.copy_from_slice(app_src);
     }
 
+
     pub fn get_current_app(&self) -> usize {
         self.current_app
     }

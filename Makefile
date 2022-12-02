@@ -32,31 +32,31 @@ test1: setup
 
 
 test2: setup
-	cp -r os2 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=2
 
 test3: setup
-	cp -r os3 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=3
 
 test4: setup
-	cp -r os4 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=4
 
 test5: setup
-	cp -r os5 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=5
 
 test6: setup
-	cp -r os6 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=6
 
 test7: setup
-	cp -r os7 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=7
 
 test8: setup
-	cp -r os8 ${DIR}/os
+	cp -r os ${DIR}/os
 	cd ${DIR}/ci-user && make test CHAPTER=8
 
 clean:
