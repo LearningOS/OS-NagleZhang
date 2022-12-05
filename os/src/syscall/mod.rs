@@ -6,6 +6,7 @@ use process::*;
 
 const SYS_WRITE: usize = 64;
 const SYS_EXIT: usize = 93;
+const SYS_YIELD: usize = 124;
 
 
 pub fn syscall(syscall_id: usize, args:[usize;3]) -> isize {
@@ -14,4 +15,9 @@ pub fn syscall(syscall_id: usize, args:[usize;3]) -> isize {
         SYS_EXIT => sys_exit(args[0] as i32),
         _ => panic!(),
     }
+}
+
+
+pub fn sys_yield() -> isize {
+    syscall(SYS_YIELD, [0,0,0]);
 }

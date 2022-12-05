@@ -1,3 +1,9 @@
+const USER_STACK_SIZE: usize = 4096;
+const KERNEL_STACK_SIZE: usize = 4096 * 2;
+const MAX_APP_NUM: usize = 16;
+const APP_BASE_ADDRESS: usize = 0x80400000;
+const APP_SIZE_LIMIT: usize = 0x20000;
+
 // since application is load at one time, so load app is consider not managed by AppManager.from now on, app manager only manage it's location.
 // link_app.S include application address information.
 // and we are using name convention to get the address.
@@ -7,7 +13,7 @@
 // if it's me, load app should do below staff:
 // - clear memory area
 // - paste data into it.
-unsafe pub fn load_apps(appid: usize) {
+pub fn load_apps(appid: usize) {
 
     extern "C" {
         fn _num_app();
@@ -21,26 +27,30 @@ unsafe pub fn load_apps(appid: usize) {
     let app_count = get_num_app();
     let app_start_addr = unsafe { core::slice::from_raw_parts(num_app_ptr.add(1), app_count + 1) };
 
+    // clear icache(insection cache)
+    core::arch::asm!("fence.i");
+
     if appid >= self.app_counts {
         info!("Application load completed.");
         panic!();
     }
 
-    info!("Load application app id: {}", appid);
+    for appid in 1..app_count {
+        info!("Load application app id: {}", appid);
+        // clear application mem area.
+        let base_addr = APP_BASE_ADDRESS + appid * APP_SIZE_LIMIT;
+        core::slice::from_raw_parts_mut(base_addr as *mut u8, APP_SIZE_LIMIT).fill(0);
 
-    // clear icache(insection cache)
-    core::arch::asm!("fence.i");
-
-    // clear application mem area.
-    core::slice::from_raw_parts_mut(APP_BASE_ADDRESS as *mut u8, APP_SIZE_LIMIT).fill(0);
-
-    // let's fill content to app dest specified by link_app.S
-    let app_src = core::slice::from_raw_parts(
-        self.current_app_start[appid] as *const u8,
-        self.current_app_start[appid + 1 ] - self.current_app_start[appid]
-    );
-    let app_dest = core::slice::from_raw_parts_mut(APP_BASE_ADDRESS as *mut u8, app_src.len());
-    app_dest.copy_from_slice(app_src);
+        // let's fill content to app dest specified by link_app.S
+        let app_src = core::slice::from_raw_parts(
+            app_start_addr[appid] as *const u8,
+            app_start_addr[appid + 1] - app_start_addr[appid]
+        );
+        let app_dest = core::slice::from_raw_parts_mut(base_addr as *mut u8, app_src.len());
+        app_dest.copy_from_slice(app_src);
+    }
 
 }
+
+
 

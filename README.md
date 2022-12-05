@@ -85,6 +85,28 @@ target:
 - implement time traper.
 
 
+## 12-05 16:41
+
+要实现程序切换，在没有文件系统的情况下，首先把所有 app code load 到 mem 当中。  
+load 成功，接下来就是执行，执行的程序仍然涉及到 S -> U 的切换。但是这一次的切换有一点不一样，  
+因为依次执行应用程序。这涉及到几个东西的切换；  
+这个时候， 程序实际上演变成了一个对象，而非chapter 2 当中的一坨代码。我们需要针对 task 这个对象进行操作。  
+最主要的事情就是切换，从  
+- app -> app 
+- kernel -> app 
+- app -> kernel 
+
+切换过程当中，首先需要考虑几个问题，我如何保存当前 app 的栈信息，地址信息，参数信息；
+其次，也要考虑，因为什么原因切换。 timer ， excpetion ，io 都会有切换情况发生。
+
+因为 app 涉及到切换，所以会有一个状态：  
+- 未初始化 
+- Ready (等待其他程序执行完)
+- 执行 
+- 退出 
+
+这个时候，需要一个 struct 来管理 app， 然后用一个 status 来记录跟踪。
+
 
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
 # Open-Source OS Training Comp 2022

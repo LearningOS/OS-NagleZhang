@@ -14,6 +14,7 @@ mod logging;
 mod batch;
 mod trap;
 mod syscall;
+mod lib;
 
 
 //const SYS_EXIT: usize = 93;

@@ -84,7 +84,6 @@ impl AppManager {
         self.current_app += 1;
     }
 
-    /*
     unsafe fn load_app(&self, app_id: usize) {
         if app_id >= self.app_counts {
             panic!("All applications completed!");
@@ -101,7 +100,6 @@ impl AppManager {
         let app_dst = core::slice::from_raw_parts_mut(APP_BASE_ADDRESS as *mut u8, app_src.len());
         app_dst.copy_from_slice(app_src);
     }
-    */
 }
 // lazy_static: provide init at appliction runtime.
 // this is because, application only load once kernel is under running status.
