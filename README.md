@@ -75,6 +75,14 @@ don't know why
 
 复制了 os2 的 load app，同样的问题。  
 
+basictly the reason is CI implementation do a lot of stuff for us. and if we run `make test2`, it will works. do not know the reason yet.  
+
+## 12-04 23:28  let's try chapter3 with timer & multiple applications
+
+target:  
+- we need load application at once , instead of load it at 0x80400000
+  - first we need consider re-write the code, because there is no need to load application with appmanager;  
+- implement time traper.
 
 
 
