@@ -4,6 +4,16 @@ const MAX_APP_NUM: usize = 16;
 const APP_BASE_ADDRESS: usize = 0x80400000;
 const APP_SIZE_LIMIT: usize = 0x20000;
 
+pub fn get_num_app() -> usize {
+    extern "C" {
+        fn _num_app();
+    }
+
+    unsafe {
+        (_num_app as usize as *const usize).read_volatile()
+    }
+}
+
 // since application is load at one time, so load app is consider not managed by AppManager.from now on, app manager only manage it's location.
 // link_app.S include application address information.
 // and we are using name convention to get the address.

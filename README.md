@@ -1,3 +1,4 @@
+# Log
 ![visualization](./os/img/kernel_visualize.png)
 Environment: Ubuntu 22.04 LTS linux 5.15.0 there is no Chinese input method.
 
@@ -101,11 +102,19 @@ load 成功，接下来就是执行，执行的程序仍然涉及到 S -> U 的�
 
 因为 app 涉及到切换，所以会有一个状态：  
 - 未初始化 
-- Ready (等待其他程序执行完)
+- Ready (等待其他程序执行完) 
 - 执行 
 - 退出 
 
 这个时候，需要一个 struct 来管理 app， 然后用一个 status 来记录跟踪。
+
+rcore implement multiple strcut:  
+- task control block manage status & context 
+- context manage register information when switch is happening
+- task status manage task is running , waiting or under initialization.
+- task control block control when this task need to be switch.
+- TaskManager is a global management system.keeps the metadata of apps. manage all the applictions
+- TaskManagerInner manage all the applications 
 
 
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
