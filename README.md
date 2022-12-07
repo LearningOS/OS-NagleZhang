@@ -117,6 +117,19 @@ rcore implement multiple strcut:
 - TaskManagerInner manage all the applications 
 
 
+## 12-7 16:22
+
+基础数据结构准备好了。之间如何进行合作？  
+
+无非是首先 restore，切换到用户态，然后执行用户态应用程序。应用程序在等待 io 的过程当中，切换到另外一个 app。并且让前一个 app 冷静一下。轮到 next ready 的。  
+当 current io 结束的时候，又进入到等待队列。等待被 pick up。  
+
+那么，如何运行第一个？  
+- 还和之前一样，__restore
+
+
+
+
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
 # Open-Source OS Training Comp 2022
 

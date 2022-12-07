@@ -48,7 +48,7 @@ pub fn load_apps(appid: usize) {
     for appid in 1..app_count {
         info!("Load application app id: {}", appid);
         // clear application mem area.
-        let base_addr = APP_BASE_ADDRESS + appid * APP_SIZE_LIMIT;
+        let base_addr = get_base_i(appid);
         core::slice::from_raw_parts_mut(base_addr as *mut u8, APP_SIZE_LIMIT).fill(0);
 
         // let's fill content to app dest specified by link_app.S
@@ -59,8 +59,16 @@ pub fn load_apps(appid: usize) {
         let app_dest = core::slice::from_raw_parts_mut(base_addr as *mut u8, app_src.len());
         app_dest.copy_from_slice(app_src);
     }
+}
 
+pub fn get_base_i(appid: usize) {
+    APP_BASE_ADDRESS + appid * APP_SIZE_LIMIT
 }
 
 
+pub fn init_app_cx(app_id: usize) -> usize {
+    KERNEL_STACK[app_id].push_context{
+        TrapContext::app_init_context(get_base_i(app_id), USER_STACK_SIZE[app_id].get_sp()),
+    }
+}
 

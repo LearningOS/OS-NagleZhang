@@ -82,6 +82,7 @@ impl TaskManager {
         let inner = self.inner.exclusive_access();
         let current = inner.current_task;
 
+        // 这样遍历显然效率更高。
         (current+1 .. current+self.app_count+1)
             .map(|id| id % self.app_count)
             .find(|id| {
@@ -94,6 +95,29 @@ impl TaskManager {
         //    }
         //}
     }
+
+    fn run_rist_task(&self) -> ! {
+        let mut inner = self.inner.exclusive_access();
+        let task0 = &mut inner.tasks[0];
+        task0.task_status = TaskStatus::Running;
+
+        let next_task_cx_ptr = &task0.task_cx as *const TaskContext;
+        drop(inner);
+
+        let mut _unused = TaskContext::zero_init();
+
+        unsafe {
+            __switch(
+                &mut _unused as *mut TaskContext,
+                next_task_cx_ptr,
+            );
+        }
+        panic!();
+    }
+}
+
+pub fn run_first_task() {
+    TASK_MANAGER.run_first_task();
 }
 
 pub fn mark_current_suspended() {
