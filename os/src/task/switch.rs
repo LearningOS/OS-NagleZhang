@@ -1,6 +1,6 @@
 // os/src/task/switch.rs
 
-global_asm!(include_str!("switch.S"));
+core::arch::global_asm!(include_str!("switch.S"));
 
 use super::TaskContext;
 

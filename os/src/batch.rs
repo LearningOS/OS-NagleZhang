@@ -1,3 +1,4 @@
+/*
 use crate::sync::UPSafeCell;
 use crate::trap::TrapContext;
 use lazy_static::*;
@@ -10,44 +11,6 @@ const APP_BASE_ADDRESS: usize = 0x80400000;
 const APP_SIZE_LIMIT: usize = 0x20000;
 
 
-#[repr(align(4096))]
-struct KernelStack {
-    data: [u8; KERNEL_STACK_SIZE],
-}
-
-#[repr(align(4096))]
-struct UserStack {
-    data: [u8; USER_STACK_SIZE],
-}
-
-
-static KERNEL_STACK: KernelStack = KernelStack {
-    data: [0; KERNEL_STACK_SIZE],
-};
-
-static USER_STACK: UserStack = UserStack {
-    data: [0; USER_STACK_SIZE],
-};
-
-
-impl UserStack {
-    fn get_sp(&self) -> usize {
-        self.data.as_ptr() as usize + USER_STACK_SIZE
-    }
-}
-
-impl KernelStack {
-    fn get_sp(&self) -> usize {
-        self.data.as_ptr() as usize + KERNEL_STACK_SIZE
-    }
-    pub fn push_context(&self, cx: TrapContext) -> &'static mut TrapContext {
-        let cx_ptr = (self.get_sp() - core::mem::size_of::<TrapContext>()) as *mut TrapContext;
-        unsafe {
-            *cx_ptr = cx;
-        }
-        unsafe { cx_ptr.as_mut().unwrap() }
-    }
-}
 /*
 lab2: under physic memory magement.
 app manager should track applications(not only one).
@@ -103,6 +66,8 @@ impl AppManager {
 }
 // lazy_static: provide init at appliction runtime.
 // this is because, application only load once kernel is under running status.
+*/
+/*
 lazy_static! {
     // why? using this up safe cell?
     // seems like it's a singeton. it only can be accessed by one app, otherwise it will trigger Borrowed error;
@@ -162,3 +127,5 @@ pub fn run_next_app() -> ! {
     panic!("Unreachable in batch::run_current_app!");
 }
 
+
+ */

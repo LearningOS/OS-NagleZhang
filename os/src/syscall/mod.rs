@@ -18,6 +18,6 @@ pub fn syscall(syscall_id: usize, args:[usize;3]) -> isize {
 }
 
 
-pub fn sys_yield() -> isize {
-    syscall(SYS_YIELD, [0,0,0]);
-}
+//pub fn sys_yield() -> isize {
+//    return syscall(SYS_YIELD, [0,0,0]);
+//}

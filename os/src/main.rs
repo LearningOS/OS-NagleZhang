@@ -11,10 +11,12 @@ mod lang_items;
 mod sbi;
 mod sync;
 mod logging;
-mod batch;
+//#mod batch;
 mod trap;
 mod syscall;
-mod lib;
+mod loader;
+mod task;
+//mod lib;
 
 
 //const SYS_EXIT: usize = 93;
@@ -123,6 +125,8 @@ pub fn rust_main_by_nagle() -> ! {
     logging::init();
     println!("[kernel] Hello, world!");
     trap::init();
-    batch::init();
-    batch::run_next_app();
+    loader::load_apps();
+    task::run_first_task();
+    //batch::run_next_app();
+    panic!();
 }

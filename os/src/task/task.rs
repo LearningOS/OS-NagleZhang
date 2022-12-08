@@ -1,5 +1,6 @@
+use crate::task::TaskContext;
 
-#[derive(Copy, Clone, PartailEq)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum TaskStatus{
     UnInit,
     Ready,
@@ -10,5 +11,5 @@ pub enum TaskStatus{
 #[derive(Copy, Clone)]
 pub struct TaskControlBlock {
     pub task_status: TaskStatus,
-    pub tas_cx: TaskContext,
+    pub task_cx: TaskContext,
 }
