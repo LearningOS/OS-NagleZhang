@@ -60,6 +60,11 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
             error!("[kernel] IllegalInstruction in application, core dumped.");
             exit_current_and_run_next();
         }
+
+        Trap::Exception(Exception::InstructionFault) => {
+            error!("[kernel] InstructionFault in application, core dumped.");
+            exit_current_and_run_next();
+        }
         Trap::Interrupt(Interrupt::SupervisorTimer) => {
             set_next_trigger();
             suspend_current_and_run_next();
