@@ -93,12 +93,19 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
 
 pub use context::TrapContext;
 */
+
 pub fn init() {
     extern "C" {
         fn __alltraps();
     }
     unsafe {
         stvec::write(__alltraps as usize, TrapMode::Direct);
+    }
+}
+
+pub fn enable_timer_interrupt() {
+    unsafe {
+        sie::set_stimer();
     }
 }
 

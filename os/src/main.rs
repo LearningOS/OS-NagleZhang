@@ -15,6 +15,8 @@ mod trap;
 mod syscall;
 mod loader;
 mod task;
+mod timer;
+mod config;
 
 core::arch::global_asm!(include_str!("entry.asm"));
 core::arch::global_asm!(include_str!("link_app.S"));
@@ -37,6 +39,8 @@ pub fn rust_main_by_nagle() -> ! {
     println!("[kernel] Hello, world!");
     trap::init();
     loader::load_apps();
+    trap::enable_timer_interrupt();
+    timer::set_next_trigger();
     task::run_first_task();
     //task::run_next_task();
     //batch::run_next_app();
