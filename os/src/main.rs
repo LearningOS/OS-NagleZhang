@@ -38,9 +38,14 @@ pub fn rust_main_by_nagle() -> ! {
     logging::init();
     println!("[kernel] Hello, world!");
     trap::init();
+    println!("[kernel] start load apps!");
     loader::load_apps();
+    println!("[kernel] enable timer interrupt!");
     trap::enable_timer_interrupt();
+    println!("[kernel] set next trigger!");
     timer::set_next_trigger();
+
+    println!("[kernel] start run first task!");
     task::run_first_task();
     //task::run_next_task();
     //batch::run_next_app();

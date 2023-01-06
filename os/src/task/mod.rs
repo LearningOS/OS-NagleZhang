@@ -111,13 +111,17 @@ impl TaskManager {
     fn run_first_task(&self) -> ! {
         let mut inner = self.inner.exclusive_access();
         let task0 = &mut inner.tasks[0];
+
+        println!("[task] set first task status as running!");
         task0.task_status = TaskStatus::Running;
 
         let next_task_cx_ptr = &task0.task_cx as *const TaskContext;
         drop(inner);
 
+        //println!("[task] init a task context! {:#x}", next_task_cx_ptr.copy() as usize);
         let mut _unused = TaskContext::zero_init();
 
+        println!("[task] let's switch !");
         unsafe {
             __switch(
                 &mut _unused as *mut TaskContext,

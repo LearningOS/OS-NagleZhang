@@ -70,19 +70,29 @@ pub fn get_num_app() -> usize {
 // if it's me, load app should do below staff:
 // - clear memory area
 // - paste data into it.
+/*
 pub fn load_apps() {
 
+    //extern "C" {
+    //    fn _num_app();
+    //}
     extern "C" {
         fn _num_app();
     }
 
+
+    /*
     // several thing need to be done:
     //  1. how many applications?
     //  2. application address where we pasted from.
 
+    //let app_start_addr = _num_app as usize as *const usize;
+    //let app_count = get_num_app();
+    //let app_area = unsafe { core::slice::from_raw_parts(app_start_addr.add(1), app_count + 1) };
+
     let app_start_addr = _num_app as usize as *const usize;
     let app_count = get_num_app();
-    let app_start_addr = unsafe { core::slice::from_raw_parts(app_start_addr.add(1), app_count + 1) };
+    let app_area = unsafe { core::slice::from_raw_parts(app_start_addr.add(1), app_count + 1) };
 
     // clear icache(insection cache)
     unsafe {
@@ -95,16 +105,77 @@ pub fn load_apps() {
         info!("Load application app id: {}", appid);
 
         // clear application mem area.
+        //let base_addr = get_base_i(appid);
+
         let base_addr = get_base_i(appid);
-        unsafe {core::slice::from_raw_parts_mut(base_addr as *mut u8, APP_SIZE_LIMIT).fill(0)};
+        (base_addr..base_addr + APP_SIZE_LIMIT)
+            .for_each(|addr| unsafe { (addr as *mut u8).write_volatile(0) });
+        //unsafe {core::slice::from_raw_parts_mut(base_addr as *mut u8, APP_SIZE_LIMIT).fill(0)};
 
         // let's fill content to app dest specified by link_app.S
-        let app_src = unsafe {core::slice::from_raw_parts(
-            app_start_addr[appid] as *const u8,
-            app_start_addr[appid + 1] - app_start_addr[appid]
+        //let src = unsafe {core::slice::from_raw_parts(
+        //    app_area[appid] as *const u8,
+        //    app_area[appid + 1] - app_area[appid]
+        //)};
+
+        let src = unsafe {core::slice::from_raw_parts(
+            app_area[appid] as *const u8,
+            app_area[appid + 1] - app_area[appid]
         )};
-        let app_dest = unsafe {core::slice::from_raw_parts_mut(base_addr as *mut u8, app_src.len())};
-        app_dest.copy_from_slice(app_src);
+        //let dest = unsafe {core::slice::from_raw_parts_mut(base_addr as *mut u8, src.len())};
+        let dest = unsafe { core::slice::from_raw_parts_mut(base_addr as *mut u8, src.len()) };
+        dest.copy_from_slice(src);
+    }
+    */
+    let num_app_ptr = _num_app as usize as *const usize;
+    let num_app = get_num_app();
+    let app_start = unsafe { core::slice::from_raw_parts(num_app_ptr.add(1), num_app + 1) };
+    // clear i-cache first
+    unsafe {
+        core::arch::asm!("fence.i");
+    }
+    // load apps
+    for i in 0..num_app {
+        let base_i = get_base_i(i);
+        // clear region
+        (base_i..base_i + APP_SIZE_LIMIT)
+            .for_each(|addr| unsafe { (addr as *mut u8).write_volatile(0) });
+        // load app from data section to memory
+        let src = unsafe {core::slice::from_raw_parts(
+            app_start[i] as *const u8,
+            app_start[i + 1] - app_start[i]
+        )};
+        let dst = unsafe { core::slice::from_raw_parts_mut(base_i as *mut u8, src.len()) };
+        dst.copy_from_slice(src);
+    }
+
+}
+*/
+
+pub fn load_apps() {
+    extern "C" {
+        fn _num_app();
+    }
+    let num_app_ptr = _num_app as usize as *const usize;
+    let num_app = get_num_app();
+    let app_start = unsafe { core::slice::from_raw_parts(num_app_ptr.add(1), num_app + 1) };
+    // clear i-cache first
+    unsafe {
+        core::arch::asm!("fence.i");
+    }
+    // load apps
+    for i in 0..num_app {
+        let base_i = get_base_i(i);
+        // clear region
+        (base_i..base_i + APP_SIZE_LIMIT)
+            .for_each(|addr| unsafe { (addr as *mut u8).write_volatile(0) });
+        // load app from data section to memory
+        let src = unsafe {core::slice::from_raw_parts(
+            app_start[i] as *const u8,
+            app_start[i + 1] - app_start[i]
+        )};
+        let dst = unsafe { core::slice::from_raw_parts_mut(base_i as *mut u8, src.len()) };
+        dst.copy_from_slice(src);
     }
 }
 
